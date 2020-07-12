@@ -1,9 +1,14 @@
 import React, { useState } from 'react';
 import './App.css';
 
+var formatCurrency = new Intl.NumberFormat('en-US', {
+  style: 'currency',
+  currency: 'USD',
+});
+
 function App() {
-  const [salary, setSalary] = useState(0)
-  const [hours, setHours] = useState(0)
+  const [salary, setSalary] = useState(null)
+  const [hours, setHours] = useState(null)
 
   return (
     <div className="App">
@@ -25,11 +30,11 @@ function App() {
         </div>
         <div className="outputs body-column">
           <p>Results</p>
-          <p>${salary} / year</p>
-          <p>${salary > 0 ? (salary / 52).toFixed(2) : salary} / week</p>
+          <p>{formatCurrency.format(salary)} / year</p>
+          <p>{salary > 0 ? formatCurrency.format(salary / 52) : formatCurrency.format(salary)} / week</p>
           {
             hours > 0 
-            ? <p>${(salary / 52 / hours).toFixed(2)} / hour</p> 
+            ? <p>{formatCurrency.format(salary / 52 / hours)} / hour</p> 
             : null
           }
         </div>

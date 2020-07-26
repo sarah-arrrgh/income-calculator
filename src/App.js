@@ -17,6 +17,61 @@ function calculateHourlyRate(salary, hours) {
     ? <p>{formatCurrency.format(salary / 52 / hours)} / hour</p>
     : null
 }
+
+// TaxRates variable could look something like:
+// incomeUpTo: taxRate
+// eg.
+// {
+//   0: 10.5,
+//   14000: 17.5,
+//   48000: 30,
+//   70000: 33
+// }
+
+// want this to take variable 'TaxRates' eventually, 
+// single source of truth, 
+// can be updated, 
+// maybe diff folks have diff tax rates? 
+// diff tax codes?
+
+function calculateTaxOwed(salary) {
+
+  const bracket1 = 14000
+  const bracket2 = 48000
+  const bracket3 = 70000
+
+  const rate1 = 10.5
+  const rate2 = 17.5
+  const rate3 = 30
+  const rate4 = 33
+
+  let taxOwed = 0
+
+  function calculateTax(amount, rate) {
+    return amount / 100 * rate
+  }
+
+  if (salary > 0) {
+    if (salary <= bracket1) {
+      taxOwed += calculateTax(salary, rate1)
+    } else {
+      taxOwed += calculateTax(bracket1, rate1)
+      if (salary <= bracket2) {
+        taxOwed += calculateTax((salary - bracket1), rate2)
+      } else {
+        taxOwed += calculateTax((bracket2 - bracket1), rate2)
+        if (salary <= bracket3) {
+          taxOwed += calculateTax((salary - bracket2), rate3)
+        } else {
+          taxOwed += calculateTax((bracket3 - bracket2), rate3)
+          taxOwed += calculateTax((salary - bracket3), rate4)
+        }
+      }
+    }
+  }
+  return formatCurrency.format(taxOwed)
+}
+
 function App() {
   const [salary, setSalary] = useState(null)
   const [hours, setHours] = useState(null)
@@ -44,6 +99,7 @@ function App() {
           <p>{ formatCurrency.format(salary) } / year</p>
           <p>{ calculateWeeklyIncome(salary) } / week</p>
           { calculateHourlyRate(salary, hours) }
+          { calculateTaxOwed(salary) } Tax owed
         </div>
       </div>
     </div>

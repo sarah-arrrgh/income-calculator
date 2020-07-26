@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
-import './App.css';
+import React, { useState } from 'react'
+import './App.css'
 
 const formatCurrency = new Intl.NumberFormat('en-US', {
   style: 'currency',
   currency: 'USD',
-});
+})
 
 function calculateWeeklyIncome(salary) {
   return salary > 0 
@@ -107,7 +107,7 @@ function App() {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App

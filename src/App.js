@@ -14,7 +14,7 @@ function calculateWeeklyIncome(salary) {
 
 function calculateHourlyRate(salary, hours) {
   return hours > 0 
-    ? <p>{formatCurrency.format(salary / 52 / hours)} / hour</p>
+    ? formatCurrency.format(salary / 52 / hours)
     : null
 }
 
@@ -98,8 +98,12 @@ function App() {
           <p><b>Results</b></p>
           <p>{ formatCurrency.format(salary) } / year</p>
           <p>{ calculateWeeklyIncome(salary) } / week</p>
-          { calculateHourlyRate(salary, hours) }
-          { calculateTaxOwed(salary) } Tax owed
+          { 
+            hours 
+            ? <p>{ calculateHourlyRate(salary, hours) } / hour</p>
+            : null
+          }
+          <p>{ calculateTaxOwed(salary) } Tax owed</p>
         </div>
       </div>
     </div>

@@ -74,7 +74,7 @@ function calculateTaxOwed(salary) {
 
 function App() {
   const [salary, setSalary] = useState(null)
-  const [hours, setHours] = useState(null)
+  const [hours, setHours] = useState(40)
 
   return (
     <div className="App">

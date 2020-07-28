@@ -6,15 +6,15 @@ const formatCurrency = new Intl.NumberFormat('en-US', {
   currency: 'USD',
 })
 
-function calculateWeeklyIncome(salary) {
-  return salary > 0 
-    ? formatCurrency.format(salary / 52) 
-    : formatCurrency.format(salary)
+function calculateWeeklyIncome(taxableYearlyIncome) {
+  return taxableYearlyIncome > 0 
+    ? formatCurrency.format(taxableYearlyIncome / 52) 
+    : formatCurrency.format(0)
 }
 
-function calculateHourlyRate(salary, hours) {
+function calculateHourlyRate(taxableYearlyIncome, hours) {
   return hours > 0 
-    ? formatCurrency.format(salary / 52 / hours)
+    ? formatCurrency.format(taxableYearlyIncome / 52 / hours)
     : null
 }
 
@@ -34,7 +34,7 @@ function calculateHourlyRate(salary, hours) {
 // maybe diff folks have diff tax rates? 
 // diff tax codes?
 
-function calculateTaxOwed(salary) {
+function calculateTaxOwed(taxableYearlyIncome) {
 
   const bracket1 = 14000
   const bracket2 = 48000
@@ -51,60 +51,70 @@ function calculateTaxOwed(salary) {
     return amount / 100 * rate
   }
 
-  if (salary > 0) {
-    if (salary <= bracket1) {
-      taxOwed += calculateTax(salary, rate1)
+  if (taxableYearlyIncome > 0) {
+    if (taxableYearlyIncome <= bracket1) {
+      taxOwed += calculateTax(taxableYearlyIncome, rate1)
     } else {
       taxOwed += calculateTax(bracket1, rate1)
-      if (salary <= bracket2) {
-        taxOwed += calculateTax((salary - bracket1), rate2)
+      if (taxableYearlyIncome <= bracket2) {
+        taxOwed += calculateTax((taxableYearlyIncome - bracket1), rate2)
       } else {
         taxOwed += calculateTax((bracket2 - bracket1), rate2)
-        if (salary <= bracket3) {
-          taxOwed += calculateTax((salary - bracket2), rate3)
+        if (taxableYearlyIncome <= bracket3) {
+          taxOwed += calculateTax((taxableYearlyIncome - bracket2), rate3)
         } else {
           taxOwed += calculateTax((bracket3 - bracket2), rate3)
-          taxOwed += calculateTax((salary - bracket3), rate4)
+          taxOwed += calculateTax((taxableYearlyIncome - bracket3), rate4)
         }
       }
     }
   }
+
   return formatCurrency.format(taxOwed)
 }
 
 function App() {
-  const [salary, setSalary] = useState(null)
+  const [taxableYearlyIncome, setTaxableYearlyIncome] = useState(null)
   const [hours, setHours] = useState(40)
 
   return (
     <div className="App">
       <header className="App-header">
-        <p>
-          Income Calculator
-        </p>
+        <p>Income Calculator</p>
       </header>
       <div className="body-content">
+
         <div className="inputs body-column">
           <div className="div-input-money">
-            <p>Salary</p>
-            <input type="number" className="input-money" value={salary} onChange={(e) => setSalary(e.target.value)} />
+            <p>Taxable Yearly Income</p>
+            <input 
+            type="number" 
+            className="input-money" 
+            value={taxableYearlyIncome} 
+            onChange={(e) => setTaxableYearlyIncome(e.target.value)} />
           </div>
           <div className="div-input-time">
             <p>Hours per week</p>
-            <input type="number" className="input-time" value={hours} onChange={(e) => setHours(e.target.value)} />
+            <input 
+            type="number" 
+            className="input-time" 
+            value={hours} 
+            onChange={(e) => setHours(e.target.value)} />
           </div>
         </div>
+
         <div className="outputs body-column">
           <p><b>Results</b></p>
-          <p>{ formatCurrency.format(salary) } / year</p>
-          <p>{ calculateWeeklyIncome(salary) } / week</p>
+          <p>{ formatCurrency.format(taxableYearlyIncome) } / year</p>
+          <p>{ calculateWeeklyIncome(taxableYearlyIncome) } / week</p>
           { 
             hours 
-            ? <p>{ calculateHourlyRate(salary, hours) } / hour</p>
+            ? <p>{ calculateHourlyRate(taxableYearlyIncome, hours) } / hour</p>
             : null
           }
-          <p>{ calculateTaxOwed(salary) } Tax owed</p>
+          <p>{ calculateTaxOwed(taxableYearlyIncome) } Tax owed</p>
         </div>
+
       </div>
     </div>
   )
